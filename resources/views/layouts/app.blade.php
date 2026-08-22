@@ -8,11 +8,15 @@
 </head>
 <body>
     <header class="barre">
-        <a href="{{ route('feed.index') }}" class="logo">Cohorte</a>
+        <a href="{{ Route::has('feed.index') ? route('feed.index') : url('/') }}" class="logo">Cohorte</a>
         @auth
             <nav>
-                <a href="{{ route('entraide.index') }}">Entraide</a>
-                <a href="{{ route('profil.show') }}">{{ auth()->user()->name }}</a>
+                @if (Route::has('entraide.index'))
+                    <a href="{{ route('entraide.index') }}">Entraide</a>
+                @endif
+                @if (Route::has('profil.show'))
+                    <a href="{{ route('profil.show') }}">{{ auth()->user()->name }}</a>
+                @endif
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit">Déconnexion</button>
