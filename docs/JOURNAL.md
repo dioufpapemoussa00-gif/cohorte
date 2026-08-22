@@ -49,3 +49,27 @@ projet utilise Laravel 13 (attributs #[Fillable] et #[Hidden]) au lieu de Larave
 J'ai forcé le nom de table avec protected $table = 'appels_ia' dans le modèle, ajouté les
 imports use App\Models\Promotion et use App\Models\User dans les factories concernées, et
 adapté la syntaxe #[Fillable] pour ajouter promotion_id, role et points.
+
+
+## Phase 2 — Les factories et les seeders
+
+Branche : feat/02-seeders
+Dates : 22 août 2026
+
+### Ce que j'ai fait
+Écriture du DatabaseSeeder générant deux promotions cloisonnées avec 8 membres chacune, des
+publications et questions avec réponses, et les 4 comptes de démonstration obligatoires.
+
+### Pourquoi je l'ai fait ainsi
+J'ai utilisé recycle() pour réutiliser les membres déjà créés plutôt que d'en générer de
+nouveaux à chaque publication, évitant ainsi des dizaines d'utilisateurs fantômes inutiles.
+
+### La difficulté rencontrée
+Le fichier DatabaseSeeder.php gardait le contenu par défaut de Laravel malgré mes modifications
+précédentes, ce qui faisait échouer silencieusement le seeding (un seul utilisateur créé au
+lieu de vingt). Une ligne DB_DATABASE=laravel oubliée dans le .env pointait aussi vers un
+fichier SQLite parasite au lieu de la vraie base.
+
+### Comment je l'ai résolue
+Vérification du contenu réel du fichier avec Get-Content avant de conclure, remplacement complet
+du DatabaseSeeder.php, et nettoyage du .env pour ne garder que DB_CONNECTION=sqlite.
