@@ -23,3 +23,29 @@ s'ouvrir par moments, et une faute de frappe dans le nom du dossier components (
 Installation de Herd pour contourner le problème Composer. Utilisation de php artisan serve et
 http://127.0.0.1:8000 comme solution de secours pour le lien Herd. Renommage du dossier avec
 Rename-Item une fois la faute de frappe repérée grâce au message d'erreur Git.
+
+## Phase 1 — Le modèle de données et les relations Eloquent
+
+Branche : feat/01-modele-donnees
+Dates : 21 août 2026
+
+### Ce que j'ai fait
+Création des 6 tables (promotions, publications, reponses, signalements, appels_ia, et
+l'extension de users), des modèles Eloquent avec leurs relations et scopes, et des factories
+associées.
+
+### Pourquoi je l'ai fait ainsi
+J'ai suivi la structure du guide en une seule table publications pour les posts et les questions,
+distingués par une colonne type, afin d'éviter de dupliquer la logique de modération et de
+signalement.
+
+### La difficulté rencontrée
+Le nom de table généré automatiquement pour AppelIa était appel_ias au lieu de appels_ia attendu,
+et les factories généraient une erreur de classe introuvable faute d'imports explicites des
+modèles Promotion et User. La syntaxe des modèles diffère aussi légèrement du guide car mon
+projet utilise Laravel 13 (attributs #[Fillable] et #[Hidden]) au lieu de Laravel 12.
+
+### Comment je l'ai résolue
+J'ai forcé le nom de table avec protected $table = 'appels_ia' dans le modèle, ajouté les
+imports use App\Models\Promotion et use App\Models\User dans les factories concernées, et
+adapté la syntaxe #[Fillable] pour ajouter promotion_id, role et points.
