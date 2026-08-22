@@ -53,6 +53,43 @@ In order to ensure that the Laravel community is welcoming to all, please review
 
 If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
+# Cohorte
+
+Réseau social de promotion pour apprenants, avec modération automatique par IA.
+
+## Installation
+
+\```bash
+git clone https://github.com/dioufpapemoussa00-gif/cohorte.git
+cd cohorte
+composer install
+copy .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve
+\```
+
+Le site sera accessible sur http://127.0.0.1:8000
+
+## Base de données
+
+Ce projet utilise SQLite (recommandé par le guide d'évaluation). Le fichier
+database/database.sqlite est versionné avec le projet, aucune installation de serveur
+de base de données n'est nécessaire.
+
+## Comptes de démonstration
+
+| Email | Mot de passe | Rôle | Promotion |
+|---|---|---|---|
+| awa@cohorte.test | password | Apprenant | Groupe A |
+| moussa@cohorte.test | password | Délégué | Groupe A |
+| fatou@cohorte.test | password | Apprenant | Groupe B |
+| formateur@cohorte.test | password | Enseignant | Aucune |
+
+## Modèle OpenRouter utilisé
+
+À compléter en Phase 7.
+
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
