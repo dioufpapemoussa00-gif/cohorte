@@ -102,3 +102,28 @@ ce stade du projet.
 Nettoyage du fichier fortify.php en supprimant le bloc orphelin. Utilisation de Route::has()
 dans le gabarit pour vérifier l'existence d'une route avant de générer un lien vers elle,
 permettant au projet de rester fonctionnel phase après phase sans erreur 500.
+
+
+## Phase 4 — Rejoindre une promotion et le profil
+
+Branche : feat/04-adhesion-promotion
+Dates : 22 août 2026
+
+### Ce que j'ai fait
+Création du middleware ExigePromotion qui redirige un utilisateur sans promotion vers un
+formulaire de saisie de code d'invitation, du contrôleur AdhesionController pour traiter cette
+adhésion après coup, et d'une page de profil simple affichant les informations du membre.
+
+### Pourquoi je l'ai fait ainsi
+Le middleware garantit qu'aucune route du groupe promotion ne peut recevoir un utilisateur sans
+promotion_id, évitant ainsi des erreurs de type TypeError dans les scopes qui attendent un
+entier. C'est une invariante vérifiée une fois en amont plutôt que dans chaque contrôleur.
+
+### La difficulté rencontrée
+Le middleware original du guide redirigeait l'enseignant vers une route enseignant.promotions.index
+qui n'est pas détaillée dans ce guide et sort du périmètre actuel du projet.
+
+### Comment je l'ai résolue
+J'ai simplifié la condition : un enseignant traverse simplement le middleware sans redirection
+spécifique, en attendant une éventuelle implémentation future du module enseignant. Ce choix est
+documenté dans DECISIONS.md.
