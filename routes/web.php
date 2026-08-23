@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Feed\PublicationController;
 use App\Http\Controllers\Profil\ProfilController;
 use App\Http\Controllers\Promotion\AdhesionController;
 use Illuminate\Support\Facades\Route;
@@ -13,7 +14,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('promotion')->group(function () {
         Route::get('/profil', [ProfilController::class, 'show'])->name('profil.show');
 
-        // Les autres routes métier (publications, entraide, etc.) viendront ici
-        // au fil des prochaines phases.
+        Route::resource('publications', PublicationController::class)
+            ->only(['index', 'create', 'store', 'show', 'destroy']);
     });
 });
