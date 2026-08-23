@@ -127,3 +127,33 @@ qui n'est pas détaillée dans ce guide et sort du périmètre actuel du projet.
 J'ai simplifié la condition : un enseignant traverse simplement le middleware sans redirection
 spécifique, en attendant une éventuelle implémentation future du module enseignant. Ce choix est
 documenté dans DECISIONS.md.
+
+
+## Phase 5 — Le fil de promotion et le cloisonnement
+
+Branche : feat/05-fil-promotion
+Dates : 22 août 2026
+
+### Ce que j'ai fait
+Création du contrôleur de ressource PublicationController avec ses cinq actions (index, create,
+store, show, destroy), de la policy PublicationPolicy qui protège l'accès à chaque publication,
+d'un FormRequest dédié pour la validation, et des vues du fil avec pagination.
+
+### Pourquoi je l'ai fait ainsi
+J'ai combiné deux mécanismes de protection distincts : le scope deLaPromotion() qui filtre la
+liste des publications visibles dans le fil, et la policy qui protège l'accès direct à une
+publication par son URL. Les deux sont nécessaires, car protéger uniquement l'un des deux
+laisse une brèche : un utilisateur pourrait deviner un identifiant et y accéder directement
+même s'il n'apparaît jamais dans son fil.
+
+### La difficulté rencontrée
+La méthode authorizeResource() du contrôleur provoquait une erreur "Call to undefined method
+middleware()" avec Laravel 13, car cette méthode s'appuyait en interne sur un mécanisme retiré
+des versions récentes du framework.
+
+### Comment je l'ai résolue
+J'ai remplacé authorizeResource() par des appels explicites à $this->authorize() au début de
+chaque méthode du contrôleur, ce qui produit exactement le même comportement de sécurité de
+façon plus explicite. J'ai testé le cloisonnement en créant une publication avec le compte Awa
+(Groupe A), puis en tentant d'y accéder directement par URL avec le compte Fatou (Groupe B) :
+l'application a correctement renvoyé une erreur 403.
