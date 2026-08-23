@@ -73,3 +73,32 @@ fichier SQLite parasite au lieu de la vraie base.
 ### Comment je l'ai résolue
 Vérification du contenu réel du fichier avec Get-Content avant de conclure, remplacement complet
 du DatabaseSeeder.php, et nettoyage du .env pour ne garder que DB_CONNECTION=sqlite.
+
+
+## Phase 3 — L'authentification avec Laravel Fortify
+
+Branche : feat/03-authentification-fortify
+Dates : 22 août 2026
+
+### Ce que j'ai fait
+Installation de Laravel Fortify, activation des fonctionnalités d'inscription, connexion et
+réinitialisation de mot de passe, écriture des vues Blade correspondantes, et validation du
+code d'invitation directement dans l'action CreateNewUser pour rattacher automatiquement le
+nouvel utilisateur à sa promotion.
+
+### Pourquoi je l'ai fait ainsi
+J'ai choisi Fortify plutôt que Breeze car il ne fournit que la logique métier sécurisée
+(hachage, limitation des tentatives, jetons de réinitialisation) sans imposer de vues, ce qui
+me permet d'écrire moi-même les formulaires tout en bénéficiant des mécanismes de sécurité
+éprouvés.
+
+### La difficulté rencontrée
+Une erreur de syntaxe PHP dans config/fortify.php causée par un reste de code (passkeys) non
+supprimé lors de la modification de la section features. Le gabarit layouts/app.blade.php
+plantait aussi car il référençait des routes (feed.index, etc.) qui n'existent pas encore à
+ce stade du projet.
+
+### Comment je l'ai résolue
+Nettoyage du fichier fortify.php en supprimant le bloc orphelin. Utilisation de Route::has()
+dans le gabarit pour vérifier l'existence d'une route avant de générer un lien vers elle,
+permettant au projet de rester fonctionnel phase après phase sans erreur 500.
