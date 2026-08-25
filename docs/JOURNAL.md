@@ -157,3 +157,28 @@ chaque méthode du contrôleur, ce qui produit exactement le même comportement 
 façon plus explicite. J'ai testé le cloisonnement en créant une publication avec le compte Awa
 (Groupe A), puis en tentant d'y accéder directement par URL avec le compte Fatou (Groupe B) :
 l'application a correctement renvoyé une erreur 403.
+
+
+## Phase 6 — L'entraide : questions et réponses
+
+Branche : feat/06-entraide
+Dates : 22 août 2026
+
+### Ce que j'ai fait
+Création des contrôleurs QuestionController, ReponseController et ReponseRetenueController,
+avec les vues associées permettant de poser une question, d'y répondre, et de désigner une
+réponse comme retenue avec crédit automatique de points à son auteur.
+
+### Pourquoi je l'ai fait ainsi
+J'ai séparé la désignation de la réponse retenue dans son propre contrôleur plutôt que d'ajouter
+une méthode au QuestionController, car ce n'est pas une modification de la question mais une
+action à part entière avec ses propres droits (seul l'auteur de la question peut le faire).
+
+### La difficulté rencontrée
+Aucune difficulté technique majeure sur cette phase, elle consolidait surtout des patterns déjà
+mis en place en phase 5 (policy, scope, FormRequest).
+
+### Comment je l'ai résolue
+J'ai réutilisé la policy PublicationPolicy existante en y ajoutant simplement la méthode
+designerReponse(), et testé le parcours complet avec trois comptes différents (auteur de la
+question, répondant, puis retour à l'auteur pour valider la réponse).
