@@ -26,3 +26,23 @@ méthode du contrôleur (index, create, store, show, destroy).
 **Alternative écartée** : downgrader le projet vers Laravel 12 pour coller exactement au guide,
 ce qui aurait ajouté de la complexité inutile et potentiellement d'autres incompatibilités avec
 les autres packages installés (Fortify notamment).
+
+
+## Décision — Comportement en cas de panne d'OpenRouter (fail-closed)
+
+Que se passe-t-il si OpenRouter est en panne au moment où un membre publie ? Deux positions
+sont possibles : fail-open (publier quand même, sans contrôle) ou fail-closed (envoyer en file
+de modération humaine, rien ne passe sans contrôle).
+
+**Choix retenu** : fail-closed (COHORTE_MODERATION_FAIL_OPEN=false par défaut). En cas de panne,
+la publication part dans la file de modération du délégué plutôt que d'être publiée directement.
+
+**Raisonnement** : dans un contexte scolaire où le contenu modéré peut inclure des propos
+inappropriés entre apprenants, je préfère un léger désagrément (attente de validation humaine
+en cas de panne, situation rare) plutôt qu'un risque de laisser passer un contenu réellement
+problématique sans aucun filtre. Le délégué reste en mesure de valider rapidement les
+publications en attente.
+
+**Alternative écartée** : fail-open, qui garderait l'application entièrement fluide même en cas
+de panne, mais qui exposerait la promotion à des publications non contrôlées si la panne
+survient précisément au moment où quelqu'un tente de publier un contenu problématique.
