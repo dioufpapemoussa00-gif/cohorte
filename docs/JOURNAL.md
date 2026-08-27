@@ -182,3 +182,33 @@ mis en place en phase 5 (policy, scope, FormRequest).
 J'ai réutilisé la policy PublicationPolicy existante en y ajoutant simplement la méthode
 designerReponse(), et testé le parcours complet avec trois comptes différents (auteur de la
 question, répondant, puis retour à l'auteur pour valider la réponse).
+
+
+## Phase 7 — Intégration OpenRouter et modération automatique
+
+Branche : feat/07-moderation-ia
+Dates : 26 août 2026
+
+### Ce que j'ai fait
+Création du client OpenRouterClient isolant tous les appels HTTP externes, de l'énumération
+VerdictModeration à quatre états, du ServiceModeration avec parsing défensif de la réponse IA,
+et branchement de la modération automatique sur la création de publication.
+
+### Pourquoi je l'ai fait ainsi
+J'ai isolé la communication HTTP dans une classe dédiée (app/Services/OpenRouterClient.php) afin
+qu'aucun contrôleur ne contienne d'appel réseau direct : si je change de fournisseur d'IA un jour,
+un seul fichier est à modifier. Le parsing de la réponse du modèle est volontairement défensif
+(regex pour extraire le JSON, json_decode avec vérification, tryFrom sur l'enum) car un modèle de
+langage ne garantit jamais un format de sortie strict.
+
+### La difficulté rencontrée
+Le premier modèle gratuit choisi (google/gemma-4-26b-a4b-it:free) renvoyait une erreur 429
+"temporarily rate-limited upstream" à chaque appel, rendant le service inutilisable en pratique.
+
+### Comment je l'ai résolue
+J'ai basculé sur l'identifiant spécial openrouter/free, un routeur automatique fourni par
+OpenRouter qui sélectionne lui-même un modèle gratuit disponible parmi tous ceux du catalogue,
+évitant ainsi de dépendre de la disponibilité d'un seul modèle nommé. J'ai testé les quatre
+scénarios possibles (verdict acceptable réel, verdict inacceptable simulé, panne réseau simulée,
+réponse illisible simulée) avec Http::fake() pour valider la robustesse sans consommer de vrais
+appels API.
