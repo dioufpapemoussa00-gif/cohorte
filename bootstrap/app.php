@@ -16,6 +16,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'promotion' => \App\Http\Middleware\ExigePromotion::class,
         ]);
     })
+    ->withMiddleware(function (Middleware $middleware): void {
+    $middleware->alias([
+        'promotion' => \App\Http\Middleware\ExigePromotion::class,
+        'quota.ia' => \App\Http\Middleware\VerifieQuotaIa::class,
+    ]);
+})
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
