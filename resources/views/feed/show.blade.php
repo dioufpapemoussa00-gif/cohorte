@@ -18,5 +18,19 @@
         </p>
     @endif
 
+    @if ($publication->user_id !== auth()->id())
+        <form method="POST" action="{{ route('signalements.store', $publication) }}">
+            @csrf
+            <select name="motif" required>
+                <option value="">-- Motif du signalement --</option>
+                <option value="insulte">Insulte</option>
+                <option value="hors_sujet">Hors sujet</option>
+                <option value="publicite">Publicité</option>
+                <option value="autre">Autre</option>
+            </select>
+            <button type="submit">Signaler</button>
+        </form>
+    @endif
+
     <a href="{{ route('publications.index') }}">Retour au fil</a>
 @endsection
