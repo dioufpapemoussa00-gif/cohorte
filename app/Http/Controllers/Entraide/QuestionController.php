@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Entraide;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePublicationRequest;
 use App\Models\Publication;
+use App\Services\ServiceDetectionDoublon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -36,11 +37,22 @@ class QuestionController extends Controller
         return view('entraide.create');
     }
 
-    public function store(StorePublicationRequest $request): RedirectResponse
+    public function store(StorePublicationRequest $request, ServiceDetectionDoublon $detection): RedirectResponse|View
     {
         $this->authorize('create', Publication::class);
 
         $donnees = $request->validated();
+
+        if (! $request->boolean('doublon_verifie') && $request->user()->peutAppelerIa()) {
+            $similaires = $detection->chercherSimilaires($donnees['titre'] ?? '', $request->user());
+
+            if ($similaires !== []) {
+                return view('entraide.create', [
+                    'similaires' => $similaires,
+                    'donnees' => $donnees,
+                ]);
+            }
+        }
 
         $question = Publication::create([
             ...$donnees,
