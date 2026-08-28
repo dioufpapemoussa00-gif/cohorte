@@ -4,6 +4,8 @@ use App\Http\Controllers\Entraide\QuestionController;
 use App\Http\Controllers\Entraide\ReponseController;
 use App\Http\Controllers\Entraide\ReponseRetenueController;
 use App\Http\Controllers\Feed\PublicationController;
+use App\Http\Controllers\Moderation\FileModerationController;
+use App\Http\Controllers\Moderation\SignalementController;
 use App\Http\Controllers\Profil\ProfilController;
 use App\Http\Controllers\Promotion\AdhesionController;
 use Illuminate\Support\Facades\Route;
@@ -28,5 +30,11 @@ Route::middleware('auth')->group(function () {
 
         Route::post('questions/{question}/reponse-retenue', [ReponseRetenueController::class, 'store'])
             ->name('reponse-retenue.store');
+
+        Route::post('publications/{publication}/signalements', [SignalementController::class, 'store'])
+            ->name('signalements.store');
+
+        Route::get('/moderation', [FileModerationController::class, 'index'])->name('moderation.index');
+        Route::put('/moderation/{publication}', [FileModerationController::class, 'update'])->name('moderation.update');
     });
 });
