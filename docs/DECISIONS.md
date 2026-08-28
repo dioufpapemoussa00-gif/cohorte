@@ -46,3 +46,24 @@ publications en attente.
 **Alternative écartée** : fail-open, qui garderait l'application entièrement fluide même en cas
 de panne, mais qui exposerait la promotion à des publications non contrôlées si la panne
 survient précisément au moment où quelqu'un tente de publier un contenu problématique.
+
+
+## Décision — Le quota ne bloque pas la modération, seulement la détection de doublon
+
+Pourquoi le quota d'IA ne bloque-t-il pas la publication normale (modération automatique) mais
+seulement la détection de doublon ?
+
+**Choix retenu** : la modération est une contrainte imposée par l'application elle-même, pas un
+service rendu au membre — la lui refuser parce qu'il a épuisé son quota reviendrait à l'empêcher
+de s'exprimer alors que la modération protège la promotion, pas l'utilisateur qui publie. La
+détection de doublon, elle, est une assistance facultative : on peut la retirer sans dommage,
+l'utilisateur peut toujours poser sa question normalement.
+
+**Implémentation** : les deux fonctionnalités comptent leurs appels dans la table appels_ia
+(contexte "moderation" ou "doublon"), mais seule la détection de doublon vérifie peutAppelerIa()
+avant de s'exécuter (directement dans QuestionController::store(), sans middleware séparé, car
+la vérification est déjà simple à cet endroit précis).
+
+**Alternative écartée** : appliquer un middleware quota.ia générique sur la route de création de
+question, ce qui aurait bloqué la publication de la question elle-même en cas de quota épuisé,
+alors que seule l'assistance de détection devrait être désactivée.
