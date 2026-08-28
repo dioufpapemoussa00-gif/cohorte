@@ -212,3 +212,32 @@ OpenRouter qui sélectionne lui-même un modèle gratuit disponible parmi tous c
 scénarios possibles (verdict acceptable réel, verdict inacceptable simulé, panne réseau simulée,
 réponse illisible simulée) avec Http::fake() pour valider la robustesse sans consommer de vrais
 appels API.
+
+
+## Phase 8 — Les signalements et le masquage automatique
+
+Branche : feat/08-signalements
+Dates : 28 août 2026
+
+### Ce que j'ai fait
+Création du SignalementController qui gère le signalement d'une publication avec interdiction
+du double signalement, du masquage automatique au seuil configuré, et du FileModerationController
+permettant au délégué de valider ou refuser les publications en attente.
+
+### Pourquoi je l'ai fait ainsi
+La policy signaler() (créée en phase 5) empêche déjà l'auto-signalement et le signalement hors
+promotion au niveau de l'autorisation. Le contrôleur ne gère donc que la vérification du double
+signalement, en complément de la contrainte unique déjà posée en base de données sur
+(publication_id, user_id) : la contrainte protège les données quoi qu'il arrive, la vérification
+PHP permet d'afficher un message compréhensible plutôt qu'une erreur SQL brute.
+
+### La difficulté rencontrée
+En testant le masquage automatique via tinker, j'ai simulé plusieurs connexions avec Auth::login()
+dans une boucle, ce qui a produit un comportement incohérent où le masquage ne se déclenchait pas
+malgré trois signalements enregistrés en base.
+
+### Comment je l'ai résolue
+J'ai isolé le test en reproduisant manuellement, étape par étape, la logique exacte de
+masquerSiSeuilAtteint() (comptage, comparaison au seuil, mise à jour du statut), ce qui a confirmé
+que la logique métier elle-même était correcte. Le problème venait uniquement de la simulation
+artificielle de plusieurs sessions utilisateur
