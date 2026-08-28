@@ -241,3 +241,30 @@ J'ai isolé le test en reproduisant manuellement, étape par étape, la logique 
 masquerSiSeuilAtteint() (comptage, comparaison au seuil, mise à jour du statut), ce qui a confirmé
 que la logique métier elle-même était correcte. Le problème venait uniquement de la simulation
 artificielle de plusieurs sessions utilisateur
+
+
+## Phase 9 — Le quota d'IA et la détection de doublon
+
+Branche : feat/09-quota-et-doublon
+Dates : 28 août 2026
+
+### Ce que j'ai fait
+Ajout des méthodes de calcul de quota au modèle User (appelsIaAujourdhui, quotaIaRestant,
+peutAppelerIa), création du ServiceDetectionDoublon qui compare une nouvelle question aux
+questions existantes de la promotion via OpenRouter, et affichage du quota restant dans le
+gabarit principal.
+
+### Pourquoi je l'ai fait ainsi
+Le service de détection refiltre systématiquement les identifiants renvoyés par l'IA avec
+deLaPromotion() avant de les utiliser, car un modèle de langage peut halluciner un identifiant
+qui ne faisait même pas partie du catalogue envoyé initialement.
+
+### La difficulté rencontrée
+Une erreur de nom de fichier (ServiceDetectionDoublon mal orthographié) a empêché la classe
+d'être trouvée par le conteneur d'injection de dépendances de Laravel.
+
+### Comment je l'ai résolue
+Vérification du contenu réel du dossier app/Services avec la commande dir avant de conclure
+à un bug de logique, correction du nom de fichier, puis validation du fonctionnement avec un
+test en tinker créant une question de référence et vérifiant qu'une reformulation proche était
+bien détectée comme similaire, tandis qu'une question totalement différente ne l'était pas.
