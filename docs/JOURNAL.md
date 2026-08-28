@@ -268,3 +268,30 @@ Vérification du contenu réel du dossier app/Services avec la commande dir avan
 à un bug de logique, correction du nom de fichier, puis validation du fonctionnement avec un
 test en tinker créant une question de référence et vérifiant qu'une reformulation proche était
 bien détectée comme similaire, tandis qu'une question totalement différente ne l'était pas.
+
+
+## Phase 10 — La réputation et les finitions
+
+Branche : feat/10-reputation
+Dates : 28 août 2026
+
+### Ce que j'ai fait
+Création de la commande cohorte:recalculer-reputation qui calcule le score de chaque membre à
+partir de son activité utile, ajout du droit d'épingler dans la policy au-delà du seuil configuré,
+tri portable du fil (compatible SQLite et MySQL), page d'erreur 403 personnalisée, et finalisation
+du README et de .env.example.
+
+### Pourquoi je l'ai fait ainsi
+J'ai choisi de stocker le score de réputation dans la colonne points plutôt que de le recalculer
+à chaque affichage, ce qui est rapide à lire. La commande de recalcul permet de remettre les
+compteurs d'aplomb si un incrément a été manqué quelque part, combinant ainsi rapidité et
+possibilité de correction.
+
+### La difficulté rencontrée
+Le tri par défaut des publications épinglées avec orderByDesc('epingle_le') fonctionne
+différemment selon le moteur de base de données (NULL en premier ou en dernier selon SQLite ou
+PostgreSQL notamment).
+
+### Comment je l'ai résolue
+Ajout d'un orderByRaw('epingle_le IS NULL') avant le tri principal, qui garantit un comportement
+identique quel que soit le moteur de base de données utilisé pour exécuter le projet.
