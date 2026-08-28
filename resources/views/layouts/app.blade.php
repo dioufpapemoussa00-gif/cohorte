@@ -17,6 +17,9 @@
                 @if (Route::has('profil.show'))
                     <a href="{{ route('profil.show') }}">{{ auth()->user()->name }}</a>
                 @endif
+                <span class="quota">
+                    Assistance IA : {{ auth()->user()->quotaIaRestant() }} / {{ config('cohorte.quota_ia_quotidien') }}
+                </span>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit">Déconnexion</button>
