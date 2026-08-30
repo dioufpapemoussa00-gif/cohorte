@@ -295,3 +295,27 @@ PostgreSQL notamment).
 ### Comment je l'ai résolue
 Ajout d'un orderByRaw('epingle_le IS NULL') avant le tri principal, qui garantit un comportement
 identique quel que soit le moteur de base de données utilisé pour exécuter le projet.
+
+
+## Démonstration de git revert
+
+Dates : 30 août 2026
+
+Conformément à l'obligation du guide (partie 3.5), voici une démonstration volontaire de
+l'usage de git revert plutôt que git reset --hard pour annuler un commit déjà poussé.
+
+### Ce que j'ai fait
+Sur la branche fix/demo-revert, j'ai committé une modification erronée de
+config/cohorte.php (seuil_epinglage passé de 50 à 5 par erreur), poussé ce commit, puis
+utilisé git revert pour l'annuler proprement.
+
+### Pourquoi je l'ai fait ainsi
+git revert crée un nouveau commit qui annule les modifications d'un ancien commit :
+l'historique s'allonge, rien n'est perdu, et c'est la seule méthode acceptable sur une
+branche déjà poussée que d'autres pourraient avoir récupérée. git reset --hard réécrit
+l'historique en supprimant des commits, ce qui est destructeur dès qu'une branche a été
+partagée.
+
+### La commande utilisée
+git revert 93cb3cb --no-edit, qui a créé le commit 15449b3 "Revert 'fix: ajuster le seuil
+epinglage a 5 points'", restaurant automatiquement la valeur 50.
