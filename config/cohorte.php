@@ -8,7 +8,7 @@ return [
     'seuil_signalement' => (int) env('COHORTE_SEUIL_SIGNALEMENT', 3),
 
     // Score de réputation ouvrant le droit d'épingler
-    'seuil_epinglage' => (int) env('COHORTE_SEUIL_EPINGLAGE', 5),
+    'seuil_epinglage' => (int) env('COHORTE_SEUIL_EPINGLAGE', 50),
 
     // Que faire si OpenRouter ne répond pas : publier quand même (true)
     // ou envoyer en file de modération (false) ?
